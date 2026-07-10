@@ -1,0 +1,36 @@
+/* app/globals.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap");
+
+:root {
+  --bg: #f5f6f8;
+  --surface: #ffffff;
+  --ink: #12151c;
+  --ink-muted: #5b6472;
+  --border: #e3e6eb;
+  --accent: #2451db;
+  --accent-ink: #ffffff;
+
+  --pending-fg: #b45309;
+  --pending-bg: #fff8ec;
+  --approved-fg: #15803d;
+  --approved-bg: #f0fbf4;
+  --rejected-fg: #b91c1c;
+  --rejected-bg: #fef2f2;
+  --posted-fg: #4338ca;
+  --posted-bg: #f0f1fe;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+.font-ledger {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+}
