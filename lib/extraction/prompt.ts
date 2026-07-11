@@ -45,6 +45,10 @@ ${
     : "- If due_date must be calculated from payment terms rather than being explicitly stated, set needs_review=true and explain."
 }
 
+- IMPORTANT: If needs_review is true, review_notes MUST always be populated
+  with a brief explanation of why. Never set needs_review=true with an empty
+  or null review_notes.
+
 - Respond with ONLY the JSON object matching the provided schema. No
   preamble, no markdown code fences, no commentary.`;
 }

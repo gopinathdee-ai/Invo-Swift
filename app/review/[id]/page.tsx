@@ -24,6 +24,7 @@ type Invoice = {
   confidence: string | null;
   needs_review: boolean;
   review_notes: string | null;
+  validation_notes: string | null;
   [key: string]: unknown;
 };
 
@@ -204,7 +205,7 @@ export default function InvoiceDetailPage() {
             <h1 className="text-xl font-semibold tracking-tight">
               {invoice.vendor_name ?? "Unknown vendor"}
             </h1>
-            <StatusBadge status={invoice.status} />
+            <StatusBadge status={invoice.status} needsReview={invoice.needs_review} />
           </div>
         </div>
         <div className="flex gap-3">
@@ -400,7 +401,7 @@ export default function InvoiceDetailPage() {
               </div>
             </div>
 
-            {invoice.review_notes && (
+            {invoice.validation_notes && (
               <div
                 className="rounded-lg p-3 text-xs flex items-start gap-2 border-l-4"
                 style={{
@@ -412,7 +413,7 @@ export default function InvoiceDetailPage() {
                 <i className="fas fa-info-circle mt-0.5 flex-shrink-0" style={{ fontSize: "12px", color: "var(--accent)" }} />
                 <div>
                   <strong className="block text-xs">Validation info</strong>
-                  <p className="mt-1 opacity-90">{invoice.review_notes}</p>
+                  <p className="mt-1 opacity-90">{invoice.validation_notes}</p>
                 </div>
               </div>
             )}

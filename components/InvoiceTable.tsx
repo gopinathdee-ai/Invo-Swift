@@ -67,7 +67,7 @@ export function InvoiceTable({ invoices }: { invoices: InvoiceRow[] }) {
                 {formatAmount(inv.total_amount, inv.currency)}
               </td>
               <td className="px-4 py-3">
-                <StatusBadge status={inv.status} />
+                <StatusBadge status={inv.status} needsReview={inv.needs_review} />
               </td>
             </tr>
           ))}

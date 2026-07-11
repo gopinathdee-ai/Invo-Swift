@@ -41,8 +41,10 @@ export const InvoiceExtractionSchema = z.object({
     .describe("Your confidence that every field above was read correctly from the document"),
   needs_review: z.boolean()
     .describe("True if any field was ambiguous, missing, handwritten, low image quality, or inconsistent (e.g. line items don't sum to subtotal)"),
-  review_notes: z.string().nullable()
-    .describe("If needs_review is true, briefly explain what's uncertain"),
+  review_notes: z.string()
+    .describe("Reason for flagging (required if needs_review is true; empty string if not flagged)"),
+  validation_notes: z.string()
+    .describe("Informational validation results (e.g. auto-check results); empty string if no info"),
 });
 
 export type InvoiceExtraction = z.infer<typeof InvoiceExtractionSchema>;

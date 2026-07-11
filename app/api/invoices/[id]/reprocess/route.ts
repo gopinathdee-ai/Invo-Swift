@@ -84,13 +84,18 @@ export async function POST(_req: NextRequest, { params }: { params: { id: string
     // 4. Validate line items
     let needsReview = extraction.needs_review;
     let reviewNotes = extraction.review_notes ?? "";
+    let validationNotes = extraction.validation_notes ?? "";
+
     if (extraction.subtotal != null && extraction.tax_amount != null) {
       const expectedTotal = extraction.subtotal + extraction.tax_amount;
       if (Math.abs(expectedTotal - extraction.total_amount) > 0.01) {
         needsReview = true;
-        reviewNotes += ` [Auto-check] subtotal + tax (${expectedTotal.toFixed(2)}) does not match total (${extraction.total_amount.toFixed(2)}).`;
+        validationNotes += ` [Auto-check] subtotal + tax (${expectedTotal.toFixed(2)}) does not match total (${extraction.total_amount.toFixed(2)}).`;
       }
     }
+
+    // Determine status after reprocessing
+    const reprocessedStatus = needsReview ? "pending_review" : "ready";
 
     // 5. Update the invoice row
     const updatedInvoice = await queryOne(
@@ -110,9 +115,10 @@ export async function POST(_req: NextRequest, { params }: { params: { id: string
         confidence = $13,
         needs_review = $14,
         review_notes = $15,
-        raw_extraction = $16,
-        status = 'pending_review'
-      where id = $17
+        validation_notes = $16,
+        raw_extraction = $17,
+        status = $18
+      where id = $19
       returning *`,
       [
         extraction.vendor_name,
@@ -130,7 +136,9 @@ export async function POST(_req: NextRequest, { params }: { params: { id: string
         extraction.confidence,
         needsReview,
         reviewNotes || null,
+        validationNotes || null,
         JSON.stringify(extraction),
+        reprocessedStatus,
         params.id,
       ]
     );

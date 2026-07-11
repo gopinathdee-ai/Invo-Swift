@@ -90,13 +90,18 @@ export async function POST(req: NextRequest) {
     //    model's self-reported needs_review.
     let needsReview = extraction.needs_review;
     let reviewNotes = extraction.review_notes ?? "";
+    let validationNotes = extraction.validation_notes ?? "";
+
     if (extraction.subtotal != null && extraction.tax_amount != null) {
       const expectedTotal = extraction.subtotal + extraction.tax_amount;
       if (Math.abs(expectedTotal - extraction.total_amount) > 0.01) {
         needsReview = true;
-        reviewNotes += ` [Auto-check] subtotal + tax (${expectedTotal.toFixed(2)}) does not match total (${extraction.total_amount.toFixed(2)}).`;
+        validationNotes += ` [Auto-check] subtotal + tax (${expectedTotal.toFixed(2)}) does not match total (${extraction.total_amount.toFixed(2)}).`;
       }
     }
+
+    // Determine initial status based on extraction outcome
+    const initialStatus = needsReview ? "pending_review" : "ready";
 
     // 4. Insert the invoice row.
     let invoice;
@@ -106,9 +111,9 @@ export async function POST(req: NextRequest) {
            original_filename, storage_path, vendor_name, vendor_tax_id,
            bill_to_name, invoice_number, po_number, invoice_date, due_date,
            currency, subtotal, tax_amount, tax_rate_pct, total_amount,
-           confidence, needs_review, review_notes, status, raw_extraction
+           confidence, needs_review, review_notes, validation_notes, status, raw_extraction
          ) values (
-           $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,'pending_review',$18
+           $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20
          )
          returning *`,
         [
@@ -129,6 +134,8 @@ export async function POST(req: NextRequest) {
           extraction.confidence,
           needsReview,
           reviewNotes || null,
+          validationNotes || null,
+          initialStatus,
           JSON.stringify(extraction),
         ]
       );
