@@ -348,76 +348,80 @@ export default function InvoiceDetailPage() {
             ))}
           </div>
 
-          <div
-            className="rounded-lg p-6 space-y-4"
-            style={{ background: "var(--surface)", border: "1px solid var(--border)" }}
-          >
-            <div>
-              <h3 className="text-sm font-semibold mb-4 flex items-center gap-2" style={{ color: "var(--ink)" }}>
-                <i className="fas fa-list" style={{ fontSize: "14px", color: "var(--accent)" }} />
-                Line items
-              </h3>
-              <div className="overflow-x-auto rounded-lg border" style={{ borderColor: "var(--border)" }}>
-                <table className="w-full text-sm font-ledger">
-                  <thead style={{ background: "var(--bg)", borderBottom: "1px solid var(--border)" }}>
-                    <tr>
-                      <th className="px-4 py-2 text-left font-medium" style={{ color: "var(--ink-muted)" }}>
-                        Description
-                      </th>
-                      <th className="px-4 py-2 text-right font-medium" style={{ color: "var(--ink-muted)" }}>
-                        Qty
-                      </th>
-                      <th className="px-4 py-2 text-right font-medium" style={{ color: "var(--ink-muted)" }}>
-                        Amount
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {lineItems.map((li, idx) => (
-                      <tr key={li.id} style={{ borderTop: "1px solid var(--border)" }}>
-                        <td className="px-4 py-3 font-sans">{li.description}</td>
-                        <td className="px-4 py-3 text-right">
-                          {li.quantity ? Number(li.quantity).toLocaleString("en-US", { maximumFractionDigits: 0 }) : "—"}
-                        </td>
-                        <td className="px-4 py-3 text-right text-[var(--accent)] font-semibold">
-                          {formatNumberWithCommas(li.line_total)}
-                        </td>
-                      </tr>
-                    ))}
-                    {lineItems.length === 0 && (
-                      <tr>
-                        <td
-                          colSpan={3}
-                          className="px-4 py-6 text-center font-sans"
-                          style={{ color: "var(--ink-muted)" }}
-                        >
-                          <i className="fas fa-inbox" style={{ fontSize: "20px", marginBottom: "8px", display: "block" }} />
-                          No line items extracted
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
+          {invoice.validation_notes && (
+            <div
+              className="rounded-lg p-3 text-xs flex items-start gap-2 border-l-4"
+              style={{
+                background: "var(--bg)",
+                color: "var(--ink-muted)",
+                borderLeftColor: "var(--accent)",
+              }}
+            >
+              <i className="fas fa-info-circle mt-0.5 flex-shrink-0" style={{ fontSize: "12px", color: "var(--accent)" }} />
+              <div>
+                <strong className="block text-xs">Validation info</strong>
+                <p className="mt-1 opacity-90">{invoice.validation_notes}</p>
               </div>
             </div>
+          )}
+        </div>
+      </div>
 
-            {invoice.validation_notes && (
-              <div
-                className="rounded-lg p-3 text-xs flex items-start gap-2 border-l-4"
-                style={{
-                  background: "var(--bg)",
-                  color: "var(--ink-muted)",
-                  borderLeftColor: "var(--accent)",
-                }}
-              >
-                <i className="fas fa-info-circle mt-0.5 flex-shrink-0" style={{ fontSize: "12px", color: "var(--accent)" }} />
-                <div>
-                  <strong className="block text-xs">Validation info</strong>
-                  <p className="mt-1 opacity-90">{invoice.validation_notes}</p>
-                </div>
-              </div>
-            )}
-          </div>
+      <div
+        className="mt-8 rounded-lg p-6"
+        style={{ background: "var(--surface)", border: "1px solid var(--border)" }}
+      >
+        <h3 className="text-sm font-semibold mb-4 flex items-center gap-2" style={{ color: "var(--ink)" }}>
+          <i className="fas fa-list" style={{ fontSize: "14px", color: "var(--accent)" }} />
+          Line items
+        </h3>
+        <div className="overflow-x-auto rounded-lg border" style={{ borderColor: "var(--border)" }}>
+          <table className="w-full text-sm font-ledger">
+            <thead style={{ background: "var(--bg)", borderBottom: "1px solid var(--border)" }}>
+              <tr>
+                <th className="px-4 py-2 text-left font-medium" style={{ color: "var(--ink-muted)" }}>
+                  Description
+                </th>
+                <th className="px-4 py-2 text-right font-medium" style={{ color: "var(--ink-muted)" }}>
+                  Qty
+                </th>
+                <th className="px-4 py-2 text-right font-medium" style={{ color: "var(--ink-muted)" }}>
+                  Unit Price
+                </th>
+                <th className="px-4 py-2 text-right font-medium" style={{ color: "var(--ink-muted)" }}>
+                  Amount
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {lineItems.map((li) => (
+                <tr key={li.id} style={{ borderTop: "1px solid var(--border)" }}>
+                  <td className="px-4 py-3 font-sans">{li.description}</td>
+                  <td className="px-4 py-3 text-right">
+                    {li.quantity ? Number(li.quantity).toLocaleString("en-US", { maximumFractionDigits: 0 }) : "—"}
+                  </td>
+                  <td className="px-4 py-3 text-right">
+                    {li.unit_price ? formatNumberWithCommas(li.unit_price) : "—"}
+                  </td>
+                  <td className="px-4 py-3 text-right text-[var(--accent)] font-semibold">
+                    {formatNumberWithCommas(li.line_total)}
+                  </td>
+                </tr>
+              ))}
+              {lineItems.length === 0 && (
+                <tr>
+                  <td
+                    colSpan={4}
+                    className="px-4 py-6 text-center font-sans"
+                    style={{ color: "var(--ink-muted)" }}
+                  >
+                    <i className="fas fa-inbox" style={{ fontSize: "20px", marginBottom: "8px", display: "block" }} />
+                    No line items extracted
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
 
