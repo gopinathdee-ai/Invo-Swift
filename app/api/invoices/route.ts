@@ -15,9 +15,9 @@ export async function GET(req: NextRequest) {
         "select * from invoices where needs_review = true order by created_at desc"
       );
     } else if (status === "ready") {
-      // "Ready" filter: show invoices without issues
+      // "Ready" filter: show invoices without issues (regardless of workflow status)
       invoices = await query(
-        "select * from invoices where status = 'ready' order by created_at desc"
+        "select * from invoices where needs_review = false order by created_at desc"
       );
     } else if (status) {
       // Other statuses (failed, approved, rejected, posted)
