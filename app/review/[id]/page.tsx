@@ -443,6 +443,19 @@ export default function InvoiceDetailPage() {
         </pre>
       </details>
 
+      {reprocessStatus === "processing" && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex items-center justify-center z-50"
+        >
+          <div className="text-center">
+            <i className="fas fa-spinner animate-spin" style={{ fontSize: "48px", color: "var(--accent)", marginBottom: "16px", display: "block" }} />
+            <p style={{ color: "var(--ink)" }} className="text-sm font-medium">
+              Reprocessing invoice...
+            </p>
+          </div>
+        </div>
+      )}
+
       {confirmDialog.open && (
         <div
           className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex items-center justify-center z-50"
