@@ -6,7 +6,9 @@ import { InvoiceTable, type InvoiceRow } from "@/components/InvoiceTable";
 
 const FILTERS = [
   { value: "", label: "All" },
+  { value: "failed", label: "Failed" },
   { value: "pending_review", label: "Needs review" },
+  { value: "ready", label: "Ready" },
   { value: "approved", label: "Approved" },
   { value: "rejected", label: "Rejected" },
   { value: "posted", label: "Posted" },

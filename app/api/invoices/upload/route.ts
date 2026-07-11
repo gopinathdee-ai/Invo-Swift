@@ -18,17 +18,19 @@ const CLAUDE_MODEL = process.env.CLAUDE_MODEL || "claude-sonnet-5";
 const invoiceToolSchema = zodToJsonSchema(InvoiceExtractionSchema, "InvoiceExtraction");
 
 export async function POST(req: NextRequest) {
+  const formData = await req.formData();
+  const file = formData.get("file") as File | null;
+
+  if (!file) {
+    return NextResponse.json({ error: "No file provided" }, { status: 400 });
+  }
+  if (file.type !== "application/pdf") {
+    return NextResponse.json({ error: "Only PDF files are supported" }, { status: 400 });
+  }
+
+  let invoiceId: string | null = null;
+
   try {
-    const formData = await req.formData();
-    const file = formData.get("file") as File | null;
-
-    if (!file) {
-      return NextResponse.json({ error: "No file provided" }, { status: 400 });
-    }
-    if (file.type !== "application/pdf") {
-      return NextResponse.json({ error: "Only PDF files are supported" }, { status: 400 });
-    }
-
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
     const base64Pdf = buffer.toString("base64");
@@ -37,7 +39,16 @@ export async function POST(req: NextRequest) {
     //    even if extraction fails.
     const storagePath = await uploadInvoicePdf(file.name, buffer);
 
-    // 2. Ask Claude to extract structured fields.
+    // 2. Create invoice record in "processing" state before attempting extraction
+    let processingInvoice = await queryOne(
+      `insert into invoices (original_filename, storage_path, status)
+       values ($1, $2, 'processing')
+       returning *`,
+      [file.name, storagePath]
+    );
+    invoiceId = processingInvoice!.id;
+
+    // 3. Ask Claude to extract structured fields.
     const systemPrompt = getExtractionSystemPrompt({
       flagIfInferredBillTo: process.env.NEEDS_REVIEW_IF_INFERRED_BILL_TO !== "false",
       flagIfIllegibleBillTo: process.env.NEEDS_REVIEW_IF_ILLEGIBLE_BILL_TO !== "false",
@@ -73,11 +84,20 @@ export async function POST(req: NextRequest) {
     );
 
     if (!toolUseBlock) {
+      await queryOne(
+        `update invoices set status = 'failed', review_notes = $1 where id = $2 returning *`,
+        ["Extraction failed: Model did not return structured output", invoiceId]
+      );
       return NextResponse.json({ error: "Model did not return structured output" }, { status: 502 });
     }
 
     const parsed = InvoiceExtractionSchema.safeParse(toolUseBlock.input);
     if (!parsed.success) {
+      const errorMsg = `Extraction failed validation: ${JSON.stringify(parsed.error.format())}`;
+      await queryOne(
+        `update invoices set status = 'failed', review_notes = $1 where id = $2 returning *`,
+        [errorMsg, invoiceId]
+      );
       return NextResponse.json(
         { error: "Extraction failed validation", details: parsed.error.format() },
         { status: 422 }
@@ -86,7 +106,7 @@ export async function POST(req: NextRequest) {
 
     const extraction = parsed.data;
 
-    // 3. Extra validation, verified server-side rather than trusting the
+    // 4. Extra validation, verified server-side rather than trusting the
     //    model's self-reported needs_review.
     let needsReview = extraction.needs_review;
     let reviewNotes = extraction.review_notes ?? "";
@@ -100,25 +120,35 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Determine initial status based on extraction outcome
-    const initialStatus = needsReview ? "pending_review" : "ready";
+    // Determine final status based on extraction outcome
+    const finalStatus = needsReview ? "pending_review" : "ready";
 
-    // 4. Insert the invoice row.
+    // 5. Update the processing invoice with extracted data
     let invoice;
     try {
       invoice = await queryOne(
-        `insert into invoices (
-           original_filename, storage_path, vendor_name, vendor_tax_id,
-           bill_to_name, invoice_number, po_number, invoice_date, due_date,
-           currency, subtotal, tax_amount, tax_rate_pct, total_amount,
-           confidence, needs_review, review_notes, validation_notes, status, raw_extraction
-         ) values (
-           $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20
-         )
+        `update invoices set
+           vendor_name = $1,
+           vendor_tax_id = $2,
+           bill_to_name = $3,
+           invoice_number = $4,
+           po_number = $5,
+           invoice_date = $6,
+           due_date = $7,
+           currency = $8,
+           subtotal = $9,
+           tax_amount = $10,
+           tax_rate_pct = $11,
+           total_amount = $12,
+           confidence = $13,
+           needs_review = $14,
+           review_notes = $15,
+           validation_notes = $16,
+           raw_extraction = $17,
+           status = $18
+         where id = $19
          returning *`,
         [
-          file.name,
-          storagePath,
           extraction.vendor_name,
           extraction.vendor_tax_id,
           extraction.bill_to_name,
@@ -135,13 +165,18 @@ export async function POST(req: NextRequest) {
           needsReview,
           reviewNotes || null,
           validationNotes || null,
-          initialStatus,
           JSON.stringify(extraction),
+          finalStatus,
+          invoiceId,
         ]
       );
     } catch (err: unknown) {
       const pgErr = err as { code?: string; message?: string };
       if (pgErr.code === PG_UNIQUE_VIOLATION) {
+        await queryOne(
+          `update invoices set status = 'failed', review_notes = $1 where id = $2 returning *`,
+          [`Duplicate: An invoice with number "${extraction.invoice_number}" from "${extraction.vendor_name}" already exists.`, invoiceId]
+        );
         return NextResponse.json(
           {
             error: `An invoice with number "${extraction.invoice_number}" from "${extraction.vendor_name}" already exists.`,
@@ -152,7 +187,7 @@ export async function POST(req: NextRequest) {
       throw err;
     }
 
-    // 5. Insert line items.
+    // 6. Insert line items.
     for (const item of extraction.line_items) {
       await query(
         `insert into invoice_line_items (invoice_id, description, quantity, unit_price, line_total)
@@ -164,6 +199,13 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ invoice }, { status: 201 });
   } catch (err) {
     console.error("Invoice upload/extraction error:", err);
+    if (invoiceId) {
+      const errorMsg = err instanceof Error ? err.message : "Unknown error during extraction";
+      await queryOne(
+        `update invoices set status = 'failed', review_notes = $1 where id = $2 returning *`,
+        [errorMsg, invoiceId]
+      );
+    }
     return NextResponse.json({ error: "Extraction failed" }, { status: 500 });
   }
 }
