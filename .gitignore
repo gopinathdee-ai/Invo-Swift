@@ -39,6 +39,10 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
+# Temporary files
+tmp/
+temp/
+
 # Testing
 coverage/
 .nyc_output/

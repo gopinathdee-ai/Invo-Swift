@@ -9,7 +9,7 @@ import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { zodToJsonSchema } from "zod-to-json-schema";
 import { InvoiceExtractionSchema } from "@/lib/extraction/schema";
-import { EXTRACTION_SYSTEM_PROMPT, EXTRACTION_USER_PROMPT } from "@/lib/extraction/prompt";
+import { getExtractionSystemPrompt, EXTRACTION_USER_PROMPT } from "@/lib/extraction/prompt";
 import { uploadInvoicePdf } from "@/lib/storage";
 import { query, queryOne, PG_UNIQUE_VIOLATION } from "@/lib/db";
 
@@ -38,10 +38,16 @@ export async function POST(req: NextRequest) {
     const storagePath = await uploadInvoicePdf(file.name, buffer);
 
     // 2. Ask Claude to extract structured fields.
+    const systemPrompt = getExtractionSystemPrompt({
+      flagIfInferredBillTo: process.env.NEEDS_REVIEW_IF_INFERRED_BILL_TO !== "false",
+      flagIfIllegibleBillTo: process.env.NEEDS_REVIEW_IF_ILLEGIBLE_BILL_TO !== "false",
+      flagIfCalculatedDueDate: process.env.NEEDS_REVIEW_IF_CALCULATED_DUE_DATE !== "false",
+    });
+
     const response = await anthropic.messages.create({
       model: CLAUDE_MODEL,
       max_tokens: 4096,
-      system: EXTRACTION_SYSTEM_PROMPT,
+      system: systemPrompt,
       messages: [
         {
           role: "user",
@@ -97,22 +103,20 @@ export async function POST(req: NextRequest) {
     try {
       invoice = await queryOne(
         `insert into invoices (
-           original_filename, storage_path, vendor_name, vendor_address, vendor_tax_id,
-           bill_to_name, bill_to_address, invoice_number, po_number, invoice_date, due_date,
+           original_filename, storage_path, vendor_name, vendor_tax_id,
+           bill_to_name, invoice_number, po_number, invoice_date, due_date,
            currency, subtotal, tax_amount, tax_rate_pct, total_amount,
            confidence, needs_review, review_notes, status, raw_extraction
          ) values (
-           $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,'pending_review',$20
+           $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,'pending_review',$18
          )
          returning *`,
         [
           file.name,
           storagePath,
           extraction.vendor_name,
-          extraction.vendor_address,
           extraction.vendor_tax_id,
           extraction.bill_to_name,
-          extraction.bill_to_address,
           extraction.invoice_number,
           extraction.po_number,
           extraction.invoice_date,

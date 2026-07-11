@@ -11,12 +11,17 @@ import path from "path";
 config({ path: path.resolve(process.cwd(), ".env.local") });
 
 export function createClient() {
-  const connectionString = process.env.DATABASE_URL;
+  let connectionString = process.env.DATABASE_URL;
   if (!connectionString) {
     throw new Error("DATABASE_URL is not set. Add it to .env.local (see .env.local.example).");
   }
-  return new Client({
-    connectionString,
-    ssl: connectionString.includes("sslmode=require") ? undefined : { rejectUnauthorized: false },
-  });
+
+  // Ensure explicit sslmode to avoid pg-connection-string warnings
+  if (!connectionString.includes("sslmode=")) {
+    connectionString += "?sslmode=verify-full";
+  } else {
+    connectionString = connectionString.replace(/sslmode=(prefer|require|verify-ca)/, "sslmode=verify-full");
+  }
+
+  return new Client({ connectionString });
 }

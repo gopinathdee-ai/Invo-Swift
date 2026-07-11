@@ -38,3 +38,15 @@ export async function getSignedPdfUrl(key: string, expiresInSeconds = 60 * 60): 
   const command = new GetObjectCommand({ Bucket: BUCKET, Key: key });
   return getSignedUrl(getClient(), command, { expiresIn: expiresInSeconds });
 }
+
+export async function downloadPdfFromStorage(key: string): Promise<Buffer> {
+  const command = new GetObjectCommand({ Bucket: BUCKET, Key: key });
+  const response = await getClient().send(command);
+  const chunks: Uint8Array[] = [];
+  if (response.Body) {
+    for await (const chunk of response.Body as AsyncIterable<Uint8Array>) {
+      chunks.push(chunk);
+    }
+  }
+  return Buffer.concat(chunks);
+}

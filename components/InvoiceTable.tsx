@@ -17,6 +17,15 @@ function formatAmount(amount: number | null, currency: string | null) {
   return new Intl.NumberFormat("en-CA", { style: "currency", currency: currency ?? "CAD" }).format(amount);
 }
 
+function formatDate(date: string | null) {
+  if (!date) return "—";
+  // Handle ISO strings with or without time
+  if (date.includes("T")) return date.split("T")[0];
+  // Already in YYYY-MM-DD format
+  if (date.match(/^\d{4}-\d{2}-\d{2}$/)) return date;
+  return date;
+}
+
 export function InvoiceTable({ invoices }: { invoices: InvoiceRow[] }) {
   if (invoices.length === 0) {
     return (
@@ -52,7 +61,7 @@ export function InvoiceTable({ invoices }: { invoices: InvoiceRow[] }) {
               <td className="px-4 py-3">{inv.vendor_name ?? "—"}</td>
               <td className="px-4 py-3 font-ledger">{inv.invoice_number ?? "—"}</td>
               <td className="px-4 py-3 font-ledger" style={{ color: "var(--ink-muted)" }}>
-                {inv.invoice_date ?? "—"}
+                {formatDate(inv.invoice_date)}
               </td>
               <td className="px-4 py-3 text-right font-ledger">
                 {formatAmount(inv.total_amount, inv.currency)}

@@ -15,12 +15,10 @@ export const LineItemSchema = z.object({
 export const InvoiceExtractionSchema = z.object({
   // Vendor / issuer
   vendor_name: z.string().describe("Name of the company issuing the invoice"),
-  vendor_address: z.string().nullable(),
   vendor_tax_id: z.string().nullable().describe("GST/HST number, EIN, VAT number, etc."),
 
   // Bill-to / customer
   bill_to_name: z.string().nullable(),
-  bill_to_address: z.string().nullable(),
 
   // Invoice identifiers
   invoice_number: z.string().describe("Unique invoice identifier"),

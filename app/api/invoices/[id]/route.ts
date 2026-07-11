@@ -18,7 +18,7 @@ export async function GET(_req: NextRequest, { params }: { params: { id: string 
     // storage_path is null for manually-entered/demo rows.
     const pdfUrl = invoice.storage_path ? await getSignedPdfUrl(invoice.storage_path as string) : null;
 
-    return NextResponse.json({ invoice, lineItems, pdfUrl });
+    return NextResponse.json({ invoice, lineItems, pdfUrl, rawExtraction: invoice.raw_extraction });
   } catch (err) {
     console.error("Get invoice error:", err);
     return NextResponse.json({ error: "Failed to load invoice" }, { status: 500 });
@@ -27,10 +27,8 @@ export async function GET(_req: NextRequest, { params }: { params: { id: string 
 
 const ALLOWED_FIELDS = [
   "vendor_name",
-  "vendor_address",
   "vendor_tax_id",
   "bill_to_name",
-  "bill_to_address",
   "invoice_number",
   "po_number",
   "invoice_date",
@@ -83,3 +81,4 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     return NextResponse.json({ error: "Failed to update invoice" }, { status: 500 });
   }
 }
+

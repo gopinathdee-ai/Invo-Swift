@@ -1,7 +1,16 @@
 // prompt.ts
 // The system + user prompt sent alongside the PDF document block.
 
-export const EXTRACTION_SYSTEM_PROMPT = `You are an invoice data extraction engine used in an accounts-payable
+export function getExtractionSystemPrompt(options: {
+  flagIfInferredBillTo?: boolean;
+  flagIfIllegibleBillTo?: boolean;
+  flagIfCalculatedDueDate?: boolean;
+} = {}): string {
+  const flagIfInferredBillTo = options.flagIfInferredBillTo !== false; // default true
+  const flagIfIllegibleBillTo = options.flagIfIllegibleBillTo !== false; // default true
+  const flagIfCalculatedDueDate = options.flagIfCalculatedDueDate !== false; // default true
+
+  return `You are an invoice data extraction engine used in an accounts-payable
 pipeline. You will be shown one invoice (PDF or image). Extract the requested
 fields exactly as they appear in the document.
 
@@ -18,8 +27,29 @@ Rules:
 - If the document is not a valid invoice (e.g. it's a receipt, statement, or
   unrelated document), still fill in what you can, set confidence="low", and
   explain in review_notes.
+
+Review policy:
+${
+  !flagIfInferredBillTo
+    ? "- Missing or inferred bill_to_name is acceptable. If bill_to_name is blank or you have to infer it from another section, do NOT flag needs_review."
+    : "- If bill_to_name is missing or must be inferred from another section, set needs_review=true and explain."
+}
+${
+  !flagIfIllegibleBillTo
+    ? "- Redacted or illegible bill_to_name is acceptable. If bill_to_name is redacted/illegible in the document, do NOT flag needs_review."
+    : "- If bill_to_name is redacted or illegible in the document, set needs_review=true and explain."
+}
+${
+  !flagIfCalculatedDueDate
+    ? "- Calculated due_date from payment terms (NET30, NET60, etc.) is acceptable. Do NOT flag needs_review for a calculated due_date."
+    : "- If due_date must be calculated from payment terms rather than being explicitly stated, set needs_review=true and explain."
+}
+
 - Respond with ONLY the JSON object matching the provided schema. No
   preamble, no markdown code fences, no commentary.`;
+}
+
+export const EXTRACTION_SYSTEM_PROMPT = getExtractionSystemPrompt();
 
 export const EXTRACTION_USER_PROMPT =
   "Extract the invoice data from the attached document according to the schema.";

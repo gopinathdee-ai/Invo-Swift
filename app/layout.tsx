@@ -12,24 +12,48 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body>
         <div className="min-h-screen">
-          <header className="border-b" style={{ borderColor: "var(--border)", background: "var(--surface)" }}>
-            <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
-              <a href="/" className="flex items-center gap-2">
+          <header
+            className="border-b backdrop-blur-sm"
+            style={{
+              borderColor: "var(--border)",
+              background: "rgba(255, 255, 255, 0.95)",
+            }}
+          >
+            <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+              <a href="/" className="flex items-center gap-3 group">
                 <span
-                  className="w-6 h-6 rounded-sm flex items-center justify-center text-xs font-ledger font-semibold"
+                  className="w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold transition-transform group-hover:scale-105"
                   style={{ background: "var(--accent)", color: "var(--accent-ink)" }}
                 >
-                  IN
+                  <i className="fas fa-file-invoice"></i>
                 </span>
-                <span className="font-semibold tracking-tight">Invoice Intake</span>
+                <span className="font-bold text-lg tracking-tight" style={{ color: "var(--ink)" }}>
+                  Invoice Intake
+                </span>
               </a>
-              <nav className="flex gap-5 text-sm" style={{ color: "var(--ink-muted)" }}>
-                <a href="/" className="hover:text-[var(--ink)]">Upload</a>
-                <a href="/review" className="hover:text-[var(--ink)]">Review queue</a>
+              <nav className="flex gap-8 text-sm font-medium">
+                <a
+                  href="/"
+                  className="transition-colors hover:text-[var(--accent)]"
+                  style={{ color: "var(--ink-muted)" }}
+                >
+                  <i className="fas fa-cloud-upload-alt mr-1.5"></i>
+                  Upload
+                </a>
+                <a
+                  href="/review"
+                  className="transition-colors hover:text-[var(--accent)]"
+                  style={{ color: "var(--ink-muted)" }}
+                >
+                  <i className="fas fa-list-check mr-1.5"></i>
+                  Review queue
+                </a>
               </nav>
             </div>
           </header>
-          <main className="max-w-5xl mx-auto px-6 py-8">{children}</main>
+          <main className="max-w-6xl mx-auto px-6 py-8">
+            {children}
+          </main>
         </div>
       </body>
     </html>
