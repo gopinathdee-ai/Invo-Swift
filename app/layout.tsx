@@ -3,7 +3,7 @@ import "./globals.css";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Invoice Intake",
+  title: "InvoSwift",
   description: "AP invoice extraction — proof of concept",
 };
 
@@ -28,7 +28,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   <i className="fas fa-file-invoice"></i>
                 </span>
                 <span className="font-bold text-lg tracking-tight" style={{ color: "var(--ink)" }}>
-                  Invoice Intake
+                  InvoSwift
                 </span>
               </a>
               <nav className="flex gap-8 text-sm font-medium">

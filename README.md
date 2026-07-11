@@ -1,4 +1,4 @@
-# Invoice Intake — Proof of Concept
+# InvoSwift — Proof of Concept
 
 A click-through internal app: drop PDF invoices in, watch Claude extract the
 fields, review/edit/approve on a split-screen PDF + form view.
