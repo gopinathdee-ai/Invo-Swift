@@ -68,6 +68,7 @@ export default function InvoiceDetailPage() {
 
   // Fallback to raw_extraction if columns are null
   const getInvoiceValue = (key: keyof Invoice): any => {
+    if (!invoice) return null;
     const columnValue = invoice[key];
     if (columnValue !== null && columnValue !== undefined) return columnValue;
 
