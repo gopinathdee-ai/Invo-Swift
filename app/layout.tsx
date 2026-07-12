@@ -5,6 +5,13 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "InvoSwift",
   description: "AP invoice extraction — proof of concept",
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/icon.png", type: "image/png" },
+    ],
+    apple: "/icon.png",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -21,12 +28,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           >
             <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
               <a href="/" className="flex items-center gap-3 group">
-                <span
-                  className="w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold transition-transform group-hover:scale-105"
-                  style={{ background: "var(--accent)", color: "var(--accent-ink)" }}
-                >
-                  <i className="fas fa-file-invoice"></i>
-                </span>
+                <img
+                  src="/icon.png"
+                  alt="InvoSwift"
+                  className="w-8 h-8 rounded-lg transition-transform group-hover:scale-105"
+                />
                 <span className="font-bold text-lg tracking-tight" style={{ color: "var(--ink)" }}>
                   InvoSwift
                 </span>
