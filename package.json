@@ -8,7 +8,10 @@
     "start": "next start",
     "db:migrate": "tsx scripts/migrate.ts",
     "db:seed:mandatory": "tsx scripts/seed-mandatory.ts",
-    "db:seed:optional": "tsx scripts/seed-optional.ts"
+    "db:seed:optional": "tsx scripts/seed-optional.ts",
+    "db:prod:migrate": "tsx scripts/migrate-prod.ts",
+    "db:prod:seed:mandatory": "tsx scripts/seed-mandatory-prod.ts",
+    "db:prod:seed:optional": "tsx scripts/seed-optional-prod.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.35.0",
