@@ -8,6 +8,7 @@ pnpm-lock.yaml
 .env.local
 .env.local.backup
 .env.*.local
+.env.prod
 
 # Build outputs
 dist/
