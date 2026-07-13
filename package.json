@@ -9,9 +9,13 @@
     "db:migrate": "tsx scripts/migrate.ts",
     "db:seed:mandatory": "tsx scripts/seed-mandatory.ts",
     "db:seed:optional": "tsx scripts/seed-optional.ts",
+    "db:reset": "tsx scripts/reset.ts",
+    "db:reset:create": "tsx scripts/reset-create.ts",
     "db:prod:migrate": "tsx scripts/migrate-prod.ts",
     "db:prod:seed:mandatory": "tsx scripts/seed-mandatory-prod.ts",
-    "db:prod:seed:optional": "tsx scripts/seed-optional-prod.ts"
+    "db:prod:seed:optional": "tsx scripts/seed-optional-prod.ts",
+    "db:prod:reset": "tsx scripts/reset-prod.ts",
+    "db:prod:reset:create": "tsx scripts/reset-create-prod.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.35.0",
