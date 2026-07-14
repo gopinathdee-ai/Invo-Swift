@@ -1,0 +1,51 @@
+filename,layout,vendor_name,invoice_number,po_number,invoice_date,due_date,currency,subtotal,tax_amount,total_amount,line_item_count,date_format_on_document,edge_case,notes
+invoice_01_classic_table.pdf,classic_table,Deerfoot Freight Systems,INV-2001-80,PO-35925,2026-04-07,2026-04-22,CAD,4965.00,248.25,5213.25,4,iso,,
+invoice_02_minimal_modern.pdf,minimal_modern,Aurozix Supplies Ltd.,INV-2002-91,PO-32664,2026-03-13,2026-04-27,CAD,7630.00,381.50,8011.50,3,iso,,
+invoice_03_two_column.pdf,two_column,Bridgeland Insurance Brokers,INV-2003-30,PO-34422,2026-05-17,2026-06-16,CAD,2865.00,143.25,3008.25,5,iso,,
+invoice_04_compact_receipt.pdf,compact_receipt,Chinook HVAC Services,INV-2004-82,PO-35155,2026-01-17,2026-02-16,CAD,4485.00,224.25,4709.25,8,iso,many_items,Intentional: 8 line items (tests long/multi-page table handling)
+invoice_05_letterhead_bold.pdf,letterhead_bold,Foothills IT Consulting,INV-2005-21,,2026-02-05,2026-03-22,CAD,1620.00,81.00,1701.00,2,iso,no_po,Intentional: no PO number present on document
+invoice_06_classic_table.pdf,classic_table,Aurozix Supplies Ltd.,INV-2006-77,PO-39064,2026-04-08,2026-05-23,CAD,8965.00,448.25,9413.25,6,iso,,
+invoice_07_minimal_modern.pdf,minimal_modern,Chinook HVAC Services,INV-2007-43,PO-32927,2026-04-27,2026-05-12,CAD,12400.00,620.00,13020.00,4,iso,,
+invoice_08_two_column.pdf,two_column,Bowfort Steel & Fabrication,INV-2008-86,PO-30319,2026-02-11,,CAD,290.00,14.50,304.50,1,iso,no_due_date,Intentional: no due date present on document
+invoice_09_compact_receipt.pdf,compact_receipt,Northgate Office Solutions,INV-2009-20,PO-31133,2026-03-03,2026-03-18,CAD,6765.00,338.25,7103.25,6,iso,,
+invoice_10_letterhead_bold.pdf,letterhead_bold,Chinook HVAC Services,INV-2010-49,PO-36118,2026-05-19,2026-06-18,CAD,4852.50,242.62,5095.12,3,dmy,unusual_date_format,Intentional: date printed in DD/MM/YYYY format on the document (ambiguous vs MM/DD/YYYY)
+invoice_11_classic_table.pdf,classic_table,Foothills IT Consulting,INV-2011-85,PO-31163,2026-05-31,2026-06-30,CAD,11510.00,575.50,12085.50,5,iso,,
+invoice_12_minimal_modern.pdf,minimal_modern,Bridgeland Insurance Brokers,INV-2012-83,PO-33981,2026-02-24,2026-03-26,CAD,4300.00,215.00,4515.00,6,iso,,
+invoice_13_two_column.pdf,two_column,Sunridge Fleet Maintenance,INV-2013-17,PO-35559,2026-06-22,2026-07-07,CAD,10645.00,532.25,11177.25,12,iso,many_items,Intentional: 12 line items (tests long/multi-page table handling)
+invoice_14_compact_receipt.pdf,compact_receipt,Aurozix Supplies Ltd.,INV-2014-72,PO-36570,2026-02-12,2026-03-29,CAD,380.00,19.00,395.50,1,iso,total_mismatch,Intentional: subtotal+tax does not equal stated total (should trigger needs_review)
+invoice_15_letterhead_bold.pdf,letterhead_bold,Keltech Communications Inc.,INV-2015-46,PO-39105,2026-03-09,2026-04-23,CAD,3480.00,174.00,3654.00,5,iso,,
+invoice_16_classic_table.pdf,classic_table,Sunridge Fleet Maintenance,INV-2016-17,,2026-01-16,2026-02-15,CAD,6360.00,318.00,6678.00,3,iso,,
+invoice_17_minimal_modern.pdf,minimal_modern,Aurozix Supplies Ltd.,INV-2017-96,PO-36615,2026-01-18,2026-02-02,CAD,6077.50,303.88,6381.38,7,iso,many_items,Intentional: 7 line items (tests long/multi-page table handling)
+invoice_18_two_column.pdf,two_column,Prairie Sky Logistics Corp.,INV-2018-40,PO-32144,2026-06-21,2026-07-21,CAD,6090.00,304.50,6394.50,5,iso,,
+invoice_19_compact_receipt.pdf,compact_receipt,Rocky View Janitorial Co.,INV-2019-78,PO-34345,2026-01-26,2026-02-10,USD,210.00,10.50,220.50,2,iso,,
+invoice_20_letterhead_bold.pdf,letterhead_bold,Prairie Sky Logistics Corp.,INV-2020-88,PO-38666,2026-04-23,2026-05-23,CAD,220.00,11.00,227.50,1,iso,total_mismatch,Intentional: subtotal+tax does not equal stated total (should trigger needs_review)
+invoice_21_classic_table.pdf,classic_table,Bridgeland Insurance Brokers,INV-2021-24,PO-39064,2026-02-04,2026-03-06,CAD,725.00,36.25,761.25,2,iso,,
+invoice_22_minimal_modern.pdf,minimal_modern,Rocky View Janitorial Co.,INV-2022-36,PO-34325,2026-07-03,2026-08-02,CAD,930.00,46.50,976.50,4,dmy,unusual_date_format,Intentional: date printed in DD/MM/YYYY format on the document (ambiguous vs MM/DD/YYYY)
+invoice_23_two_column.pdf,two_column,Foothills IT Consulting,INV-2023-30,PO-39038,2026-06-13,2026-07-13,CAD,17235.00,861.75,18096.75,5,iso,,
+invoice_24_compact_receipt.pdf,compact_receipt,Rocky View Janitorial Co.,INV-2024-26,,2026-02-07,2026-03-24,CAD,1650.00,82.50,1732.50,3,iso,,
+invoice_25_letterhead_bold.pdf,letterhead_bold,Aurozix Supplies Ltd.,INV-2025-89,PO-33878,2026-05-24,2026-07-08,CAD,6030.00,301.50,6331.50,6,iso,,
+invoice_26_classic_table.pdf,classic_table,Sunridge Fleet Maintenance,INV-2026-99,,2026-03-10,2026-04-09,CAD,1750.00,87.50,1837.50,6,iso,,
+invoice_27_minimal_modern.pdf,minimal_modern,Northgate Office Solutions,INV-2027-18,PO-34573,2026-03-26,2026-04-25,CAD,6520.00,326.00,6846.00,3,iso,,
+invoice_28_two_column.pdf,two_column,Keltech Communications Inc.,INV-2028-84,PO-34349,2026-03-08,2026-04-07,CAD,2480.00,124.00,2604.00,1,iso,,
+invoice_29_compact_receipt.pdf,compact_receipt,Chinook HVAC Services,INV-2029-65,PO-38379,2026-07-06,2026-08-05,CAD,3560.00,178.00,3738.00,1,iso,,
+invoice_30_letterhead_bold.pdf,letterhead_bold,Northgate Office Solutions,INV-2030-10,PO-38821,2026-01-12,2026-02-26,CAD,18865.00,943.25,19808.25,5,iso,,
+invoice_31_classic_table.pdf,classic_table,Bridgeland Insurance Brokers,INV-2031-74,PO-36691,2026-07-04,2026-08-03,CAD,7980.00,399.00,8379.00,3,iso,,
+invoice_32_minimal_modern.pdf,minimal_modern,Bowfort Steel & Fabrication,INV-2032-96,PO-32851,2026-04-18,2026-06-02,CAD,4770.00,238.50,5008.50,4,iso,,
+invoice_33_two_column.pdf,two_column,Prairie Sky Logistics Corp.,INV-2033-69,PO-33501,2026-04-21,2026-05-21,CAD,15760.00,788.00,16548.00,4,iso,,
+invoice_34_compact_receipt.pdf,compact_receipt,Bridgeland Insurance Brokers,INV-2034-40,PO-33680,2026-03-27,2026-04-11,USD,9805.00,490.25,10295.25,6,iso,,
+invoice_35_letterhead_bold.pdf,letterhead_bold,Rocky View Janitorial Co.,INV-2035-73,PO-32417,2026-07-03,2026-08-17,USD,5315.00,265.75,5580.75,5,iso,usd,Intentional: USD invoice from a Canadian-address vendor
+invoice_36_classic_table.pdf,classic_table,Northgate Office Solutions,INV-2036-69,PO-39157,2026-04-27,2026-05-27,CAD,8370.00,418.50,8788.50,4,iso,,
+invoice_37_minimal_modern.pdf,minimal_modern,Deerfoot Freight Systems,INV-2037-67,PO-34050,2026-02-10,2026-03-27,CAD,20540.00,1027.00,21567.00,6,iso,,
+invoice_38_two_column.pdf,two_column,Northgate Office Solutions,INV-2038-79,,2026-03-27,2026-04-26,CAD,2017.50,100.88,2123.38,2,iso,total_mismatch,Intentional: subtotal+tax does not equal stated total (should trigger needs_review)
+invoice_39_compact_receipt.pdf,compact_receipt,Aurozix Supplies Ltd.,INV-2039-79,PO-31020,2026-04-15,2026-05-15,CAD,1410.00,70.50,1480.50,2,iso,,
+invoice_40_letterhead_bold.pdf,letterhead_bold,Sunridge Fleet Maintenance,INV-2040-71,,2026-05-28,2026-07-12,CAD,3530.00,176.50,3706.50,3,iso,,
+invoice_41_classic_table.pdf,classic_table,Sunridge Fleet Maintenance,INV-2041-72,,2026-06-04,2026-07-04,CAD,9355.00,467.75,9822.75,3,iso,no_po,Intentional: no PO number present on document
+invoice_42_minimal_modern.pdf,minimal_modern,Bowfort Steel & Fabrication,INV-2042-60,PO-30444,2026-02-02,2026-02-17,CAD,310.00,15.50,325.50,1,iso,,
+invoice_43_two_column.pdf,two_column,Elbow River Print & Design,INV-2043-58,,2026-01-13,2026-02-12,CAD,4500.00,225.00,4725.00,3,iso,no_po,Intentional: no PO number present on document
+invoice_44_compact_receipt.pdf,compact_receipt,Aurozix Supplies Ltd.,INV-2044-54,PO-31124,2026-01-05,,CAD,3747.50,187.38,3934.88,6,iso,no_due_date,Intentional: no due date present on document
+invoice_45_letterhead_bold.pdf,letterhead_bold,Northgate Office Solutions,INV-2045-57,,2026-06-29,2026-07-29,USD,3830.00,191.50,4021.50,4,iso,usd,Intentional: USD invoice from a Canadian-address vendor
+invoice_46_classic_table.pdf,classic_table,Rocky View Janitorial Co.,INV-2046-19,PO-33978,2026-04-12,2026-05-12,USD,640.00,32.00,672.00,1,iso,usd,Intentional: USD invoice from a Canadian-address vendor
+invoice_47_minimal_modern.pdf,minimal_modern,Bridgeland Insurance Brokers,INV-2047-54,PO-36071,2026-01-31,2026-02-15,USD,11200.00,560.00,11760.00,1,dmy,unusual_date_format,Intentional: date printed in DD/MM/YYYY format on the document (ambiguous vs MM/DD/YYYY)
+invoice_48_two_column.pdf,two_column,Foothills IT Consulting,INV-2048-23,PO-35934,2026-04-18,2026-06-02,CAD,13135.00,656.75,13801.75,5,iso,total_mismatch,Intentional: subtotal+tax does not equal stated total (should trigger needs_review)
+invoice_49_compact_receipt.pdf,compact_receipt,Deerfoot Freight Systems,INV-2049-85,PO-34022,2026-04-30,,CAD,8127.50,406.38,8533.88,6,iso,no_due_date,Intentional: no due date present on document
+invoice_50_letterhead_bold.pdf,letterhead_bold,Keltech Communications Inc.,INV-2050-72,PO-34232,2026-03-25,2026-04-24,CAD,1490.00,74.50,1564.50,3,iso,,
