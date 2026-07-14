@@ -15,10 +15,10 @@ async function confirmReset(): Promise<boolean> {
   });
 
   return new Promise((resolve) => {
-    const prompt = '⚠️  This will \x1b[1m\x1b[31mDROP ALL TABLES in PRODUCTION\x1b[0m and recreate them. \x1b[1mType "reset"\x1b[0m to confirm: ';
+    const prompt = '⚠️  This will drop all tables in PRODUCTION and recreate them. Type "\x1b[1m\x1b[31mRESET PRODUCTION DATABASE\x1b[0m" to confirm: ';
     rl.question(prompt, (answer) => {
       rl.close();
-      resolve(answer === "reset");
+      resolve(answer === "RESET PRODUCTION DATABASE");
     });
   });
 }
@@ -31,14 +31,16 @@ async function main() {
   }
 
   try {
+    const env = { ...process.env, SKIP_CONFIRMATION: "true" };
+
     console.log("\n📍 Step 1: Resetting PRODUCTION database...");
-    execSync("npm run db:prod:reset", { stdio: "inherit" });
+    execSync("npm run db:prod:reset", { stdio: "inherit", env });
 
     console.log("\n📍 Step 2: Running PRODUCTION migrations...");
-    execSync("npm run db:prod:migrate", { stdio: "inherit" });
+    execSync("npm run db:prod:migrate", { stdio: "inherit", env });
 
     console.log("\n📍 Step 3: Seeding PRODUCTION mandatory data...");
-    execSync("npm run db:prod:seed:mandatory", { stdio: "inherit" });
+    execSync("npm run db:prod:seed:mandatory", { stdio: "inherit", env });
 
     console.log("\n✓ PRODUCTION database reset and recreated successfully!");
   } catch (err) {

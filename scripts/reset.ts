@@ -8,6 +8,11 @@ import readline from "readline";
 import { createClient } from "./lib/client";
 
 async function confirmReset(): Promise<boolean> {
+  // Skip confirmation if called from reset:create (SKIP_CONFIRMATION env var)
+  if (process.env.SKIP_CONFIRMATION === "true") {
+    return true;
+  }
+
   const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,

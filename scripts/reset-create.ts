@@ -31,14 +31,16 @@ async function main() {
   }
 
   try {
+    const env = { ...process.env, SKIP_CONFIRMATION: "true" };
+
     console.log("\n📍 Step 1: Resetting database...");
-    execSync("npm run db:reset", { stdio: "inherit" });
+    execSync("npm run db:reset", { stdio: "inherit", env });
 
     console.log("\n📍 Step 2: Running migrations...");
-    execSync("npm run db:migrate", { stdio: "inherit" });
+    execSync("npm run db:migrate", { stdio: "inherit", env });
 
     console.log("\n📍 Step 3: Seeding mandatory data...");
-    execSync("npm run db:seed:mandatory", { stdio: "inherit" });
+    execSync("npm run db:seed:mandatory", { stdio: "inherit", env });
 
     console.log("\n✓ Database reset and recreated successfully!");
   } catch (err) {

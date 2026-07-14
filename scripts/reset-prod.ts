@@ -8,16 +8,21 @@ import readline from "readline";
 import { createClientProd } from "./lib/client";
 
 async function confirmReset(): Promise<boolean> {
+  // Skip confirmation if called from reset:create (SKIP_CONFIRMATION env var)
+  if (process.env.SKIP_CONFIRMATION === "true") {
+    return true;
+  }
+
   const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
   });
 
   return new Promise((resolve) => {
-    const prompt = '⚠️  This will \x1b[1m\x1b[31mDROP ALL TABLES\x1b[0m in PRODUCTION. \x1b[1mType "reset"\x1b[0m to confirm: ';
+    const prompt = '⚠️  This will drop all tables in PRODUCTION. Type "\x1b[1m\x1b[31mRESET PRODUCTION DATABASE\x1b[0m" to confirm: ';
     rl.question(prompt, (answer) => {
       rl.close();
-      resolve(answer === "reset");
+      resolve(answer === "RESET PRODUCTION DATABASE");
     });
   });
 }
